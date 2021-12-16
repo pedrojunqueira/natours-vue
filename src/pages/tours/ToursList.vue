@@ -1,3 +1,35 @@
 <template>
-  <h1>This is the tour list</h1>
+  <main class="main">
+    <div class="card-container">
+      <tour-card
+        v-for="tour in allTours"
+        :key="tour._id"
+        :id="tour._id"
+        :name="tour.name"
+        :duration="tour.duration"
+        :maxGroupSize="tour.maxGroupSize"
+        :location="tour.startLocation.description"
+        :description="tour.description"
+        :rating="tour.ratingsAverage"
+        :price="tour.price"
+        :summary="tour.summary"
+        :stops="tour.locations.length"
+        :image="tour.imageCover"
+      >
+      </tour-card>
+    </div>
+  </main>
 </template>
+
+<script>
+import TourCard from "../../components/tours/TourCard.vue";
+
+export default {
+  components: { TourCard },
+  computed: {
+    allTours() {
+      return this.$store.getters.tours;
+    },
+  },
+};
+</script>
