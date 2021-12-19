@@ -1,1 +1,5 @@
-export default {};
+export default {
+  setTours(state, payload) {
+    state.tours = payload;
+  },
+};

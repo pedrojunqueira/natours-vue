@@ -4,8 +4,8 @@
       <div class="card__picture">
         <div class="card__picture-overlay">&nbsp;</div>
         <img
-          src="../../assets/img/tours/tour-1-cover.jpg"
-          alt="Tour 1"
+          :src="imageCover"
+          :alt="`Tour-${imageNumber}`"
           class="card__picture-img"
         />
       </div>
@@ -73,6 +73,16 @@ export default {
     "price",
     "summary",
     "stops",
+    "image",
   ],
+  computed: {
+    imageCover() {
+      return require(`@/assets/img/tours/${this.image}`);
+    },
+    imageNumber() {
+      const tourNumber = this.image.split("-");
+      return tourNumber[1];
+    },
+  },
 };
 </script>

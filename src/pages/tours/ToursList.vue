@@ -31,5 +31,13 @@ export default {
       return this.$store.getters.tours;
     },
   },
+  created() {
+    this.loadTours();
+  },
+  methods: {
+    async loadTours() {
+      await this.$store.dispatch("loadTours");
+    },
+  },
 };
 </script>

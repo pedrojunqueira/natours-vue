@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <nav class="nav nav--tours">
-      <a href="#" class="nav__el">All tours</a>
+      <a href="/tours" class="nav__el">All tours</a>
     </nav>
     <div class="header__logo">
       <img src="../../assets/img/logo-white.png" alt="Natours logo" />
