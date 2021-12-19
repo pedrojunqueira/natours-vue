@@ -3,8 +3,8 @@
     <div class="card-container">
       <tour-card
         v-for="tour in allTours"
-        :key="tour._id"
-        :id="tour._id"
+        :key="tour.id"
+        :tourId="tour.id"
         :name="tour.name"
         :duration="tour.duration"
         :maxGroupSize="tour.maxGroupSize"

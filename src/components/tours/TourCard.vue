@@ -55,7 +55,9 @@
         <span class="card__footer-value">{{ rating }} </span>
         <span class="card__footer-text"> rating (21)</span>
       </p>
-      <a href="#" class="btn btn--green btn--small">Details</a>
+      <a :href="`/tours/${this.tourId}`" class="btn btn--green btn--small"
+        >Details</a
+      >
     </div>
   </div>
 </template>
@@ -63,7 +65,7 @@
 <script>
 export default {
   props: [
-    "id",
+    "tourId",
     "name",
     "duration",
     "maxGroupSize",
