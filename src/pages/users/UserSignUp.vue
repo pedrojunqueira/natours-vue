@@ -5,8 +5,8 @@
       <div class="form__group ma-bt-md">
         <label for="text" class="form__label">username</label>
         <input
-          type="email"
-          id="email"
+          type="text"
+          id="username"
           placeholder="your username"
           class="form__input"
         />
@@ -42,10 +42,9 @@
       </div>
       <div class="form__group">
         <button class="btn btn--green">Sign up</button>
-        <button @click="$router.push('/tours/login')" class="btn btn--green">
-          Login
-        </button>
       </div>
+      <p class="form__label">Already have an account?</p>
+      <a href="/tours/login" class="btn btn--green">Log In</a>
     </form>
   </div>
 </template>

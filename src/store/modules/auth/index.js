@@ -5,8 +5,8 @@ import actions from "./actions.js";
 export default {
   state() {
     return {
-      tours: [],
-      tour: {},
+      username: "",
+      token: "",
     };
   },
   mutations,

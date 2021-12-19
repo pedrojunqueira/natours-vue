@@ -69,34 +69,11 @@
 
           <div class="overview-box__group">
             <h2 class="heading-secondary ma-bt-lg">Your tour guides</h2>
-
-            <div class="overview-box__detail">
-              <img
-                src="../../assets/img/users/user-19.jpg"
-                alt="Lead guide"
-                class="overview-box__img"
-              />
-              <span class="overview-box__label">Lead guide</span>
-              <span class="overview-box__text">Steven Miller</span>
-            </div>
-            <div class="overview-box__detail">
-              <img
-                src="../../assets/img/users/user-18.jpg"
-                alt="Tour guide"
-                class="overview-box__img"
-              />
-              <span class="overview-box__label">Tour guide</span>
-              <span class="overview-box__text">Lisa Brown</span>
-            </div>
-            <div class="overview-box__detail">
-              <img
-                src="../../assets/img/users/user-17.jpg"
-                alt="Intern"
-                class="overview-box__img"
-              />
-              <span class="overview-box__label">Intern</span>
-              <span class="overview-box__text">Max Smith</span>
-            </div>
+            <tour-guide
+              v-for="guide in selectedTour.guides"
+              :key="guide"
+              :tourGuide="guide"
+            ></tour-guide>
           </div>
         </div>
       </div>
@@ -328,9 +305,10 @@
 
 <script>
 import TourPictureBox from "./TourPictureBox.vue";
+import TourGuide from "./TourGuide.vue";
 
 export default {
-  components: { TourPictureBox },
+  components: { TourPictureBox, TourGuide },
   props: ["selectedTour"],
   computed: {
     nextDate() {

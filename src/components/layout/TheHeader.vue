@@ -17,8 +17,9 @@
         <span>Jonas</span>
       </a>
 
-      <!-- <button class="nav__el">Log in</button>
-        <button class="nav__el nav__el--cta">Sign up</button> -->
+      <a href="/tours/login" class="nav__el">Log in</a>
+      <a href="/tours/sign_up" class="nav__el">Sign up</a>
+      <!-- <button class="nav__el nav__el--cta">Sign up</button> -->
     </nav>
   </header>
 </template>

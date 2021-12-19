@@ -20,6 +20,7 @@ export default {
   },
   methods: {
     async loadTour(Id) {
+      //await this.$store.dispatch("loadTour", Id);
       const url = `http://127.0.0.1:8000/api/v1/tours/${Id}`;
       const response = await axios(url);
       if (response.status == 200) {
