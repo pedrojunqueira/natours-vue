@@ -16,10 +16,20 @@ export default {
       data: params,
       config,
     });
+    console.log(response.data);
+
+    if (!response.status == 200) {
+      const error = new Error("Failed to authenticate. Check your login data.");
+      throw error;
+    }
+
     const user = {
-      username: response.data.username,
-      token: response.data.token,
+      username: payload.username,
+      token: response.data.access_token,
     };
     context.commit("setUser", user);
+  },
+  logout(context) {
+    context.commit("resetUser");
   },
 };

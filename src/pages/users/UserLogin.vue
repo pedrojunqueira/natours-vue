@@ -28,6 +28,7 @@
       <p class="form__label">Do not have an account?</p>
       <a href="/tours/sign_up" class="btn btn--green"> sign_up</a>
     </form>
+    <p v-if="!isValid">Please enter an username and password to Login</p>
   </div>
 </template>
 
@@ -37,12 +38,25 @@ export default {
     return {
       username: "",
       password: "",
+      isValid: true,
+      error: null,
     };
   },
   methods: {
     async submitForm() {
-      const payload = { username: this.username, password: this.password };
-      await this.$store.dispatch("login", payload);
+      this.isValid = true;
+      if (this.username == "" || this.password < 4) {
+        this.isValid = false;
+        return;
+      }
+      try {
+        const payload = { username: this.username, password: this.password };
+        await this.$store.dispatch("login", payload);
+        this.$router.replace("/tours");
+      } catch (err) {
+        console.log(err);
+        this.error = err;
+      }
     },
   },
 };
