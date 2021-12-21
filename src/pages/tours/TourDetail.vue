@@ -25,7 +25,6 @@ export default {
       const response = await axios(url);
       if (response.status == 200) {
         const tour = response.data.data;
-        console.log(tour);
         this.selectedTour = tour;
       }
     },

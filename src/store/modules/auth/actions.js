@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default {
-  async login(context, payload) {
+  async auth(context, payload) {
     const config = {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -21,6 +21,9 @@ export default {
       throw error;
     }
 
+    localStorage.setItem("token", response.data.access_token);
+    localStorage.setItem("username", payload.username);
+
     const user = {
       username: payload.username,
       token: response.data.access_token,
@@ -28,7 +31,13 @@ export default {
     context.commit("setUser", user);
     await context.dispatch("fetchMe");
   },
+  async login(context, payload) {
+    return await context.dispatch("auth", payload);
+  },
   logout(context) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+
     context.commit("resetUser");
   },
   async fetchMe(context) {
@@ -44,5 +53,15 @@ export default {
     }
     const me = response.data;
     context.commit("setMe", me);
+  },
+  async tryLogin(context) {
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+
+    if (token && username) {
+      const user = { username, token };
+      context.commit("setUser", user);
+      await context.dispatch("fetchMe");
+    }
   },
 };
