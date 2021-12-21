@@ -4,6 +4,11 @@ export default {
     state.token = payload.token;
   },
   resetUser(state) {
-    (state.username = null), (state.token = null);
+    state.username = null;
+    state.token = null;
+    state.me = null;
+  },
+  setMe(state, payload) {
+    state.me = payload;
   },
 };

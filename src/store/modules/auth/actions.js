@@ -16,8 +16,6 @@ export default {
       data: params,
       config,
     });
-    console.log(response.data);
-
     if (!response.status == 200) {
       const error = new Error("Failed to authenticate. Check your login data.");
       throw error;
@@ -28,8 +26,23 @@ export default {
       token: response.data.access_token,
     };
     context.commit("setUser", user);
+    await context.dispatch("fetchMe");
   },
   logout(context) {
     context.commit("resetUser");
+  },
+  async fetchMe(context) {
+    const headers = { Authorization: `Bearer ${context.getters.token}` };
+    const response = await axios({
+      method: "get",
+      url: "http://127.0.0.1:8000/api/v1/users/me",
+      headers,
+    });
+    if (!response.status == 200) {
+      const error = new Error("Failed to fetch me");
+      throw error;
+    }
+    const me = response.data;
+    context.commit("setMe", me);
   },
 };

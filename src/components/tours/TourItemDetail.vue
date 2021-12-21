@@ -314,7 +314,6 @@ export default {
     nextDate() {
       const startDates = this.selectedTour.startDates;
       const nextStart = new Date(startDates[0]);
-      //   const month = nextStart.getMonth();
       const month = nextStart.toLocaleString("default", { month: "long" });
       const year = nextStart.getFullYear();
       return `${month}  ${year}`;

@@ -3,7 +3,7 @@
     <h2 class="heading-secondary ma-bt-lg">Log into your account</h2>
     <form @click.prevent="submitForm" class="form__group">
       <div class="form__group ma-bt-md">
-        <label for="email" class="form__label">Email address</label>
+        <label for="username" class="form__label">Username</label>
         <input
           type="text"
           id="username"
