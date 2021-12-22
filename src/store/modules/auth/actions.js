@@ -64,4 +64,20 @@ export default {
       await context.dispatch("fetchMe");
     }
   },
+  async signUp(context, payload) {
+    const response = await axios({
+      method: "post",
+      url: "http://127.0.0.1:8000/api/v1/users/signup",
+      data: payload,
+    });
+    if (!response.status == 200) {
+      const error = new Error("Failed to Sign up. Check your login data.");
+      throw error;
+    }
+    await context.dispatch("login", {
+      username: payload.username,
+      password: payload.password,
+    });
+    await context.dispatch("fetchMe");
+  },
 };
