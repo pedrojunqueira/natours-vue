@@ -4,6 +4,7 @@ import ToursList from "./pages/tours/ToursList.vue";
 import TourDetail from "./pages/tours/TourDetail.vue";
 import UserLogin from "./pages/users/UserLogin.vue";
 import UserSignUp from "./pages/users/UserSignUp.vue";
+import UserAccount from "./pages/users/UserAccount.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +14,7 @@ const router = createRouter({
     { path: "/tours/:id", component: TourDetail },
     { path: "/tours/login", component: UserLogin },
     { path: "/tours/sign_up", component: UserSignUp },
+    { path: "/user/:id", component: UserAccount },
   ],
 });
 

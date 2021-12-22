@@ -78,6 +78,5 @@ export default {
       username: payload.username,
       password: payload.password,
     });
-    await context.dispatch("fetchMe");
   },
 };
