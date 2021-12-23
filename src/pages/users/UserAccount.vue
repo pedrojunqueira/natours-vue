@@ -68,7 +68,8 @@
       <div class="user-view__content">
         <div class="user-view__form-container">
           <h2 class="heading-secondary ma-bt-md">Your account settings</h2>
-          <form class="form form-user-data">
+
+          <form @click.prevent="updateMe" class="form form-user-data">
             <div class="form__group">
               <h1>username : {{ username }}</h1>
             </div>
@@ -110,6 +111,7 @@
                 >Choose new photo</a
               >
             </div>
+
             <div class="form__group right">
               <button class="btn btn--small btn--green">Save settings</button>
             </div>
@@ -128,7 +130,8 @@
                 type="password"
                 placeholder="••••••••"
                 required="required"
-                minlength="8"
+                minlength="4"
+                v-model="current_password"
               />
             </div>
             <div class="form__group">
@@ -139,7 +142,8 @@
                 type="password"
                 placeholder="••••••••"
                 required="required"
-                minlength="8"
+                minlength="4"
+                v-model="password"
               />
             </div>
             <div class="form__group ma-bt-lg">
@@ -151,11 +155,17 @@
                 type="password"
                 placeholder="••••••••"
                 required="required"
-                minlength="8"
+                minlength="4"
+                v-model="confirm_password"
               />
             </div>
             <div class="form__group right">
-              <button class="btn btn--small btn--green">Save password</button>
+              <button
+                @click.prevent="updateMyPassword"
+                class="btn btn--small btn--green"
+              >
+                Save password
+              </button>
             </div>
           </form>
         </div>
@@ -232,6 +242,47 @@ export default {
 
       const user = response.data.user;
       this.populateUser(user);
+    },
+    async updateMe() {
+      const newMe = {
+        name: this.name,
+        lastname: this.lastname,
+        email: this.email,
+      };
+      const token = this.$store.getters.token;
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await axios({
+        method: "patch",
+        url: "http://127.0.0.1:8000/api/v1/users/updateme",
+        data: newMe,
+        headers: headers,
+      });
+      if (!response.status == 200) {
+        const error = new Error("Failed to update me. Check your credentials.");
+        throw error;
+      }
+    },
+    async updateMyPassword() {
+      const newPassword = {
+        current_password: this.current_password,
+        password: this.password,
+        confirm_password: this.confirm_password,
+      };
+      const token = this.$store.getters.token;
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await axios({
+        method: "patch",
+        url: "http://127.0.0.1:8000/api/v1/users/updatemypassword",
+        data: newPassword,
+        headers: headers,
+      });
+      console.log(response.data);
+      if (!response.status == 200) {
+        const error = new Error(
+          "Failed to update my password. Check your credentials."
+        );
+        throw error;
+      }
     },
   },
 };
