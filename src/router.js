@@ -15,6 +15,7 @@ const router = createRouter({
     { path: "/tours/login", component: UserLogin },
     { path: "/tours/sign_up", component: UserSignUp },
     { path: "/user/:id", component: UserAccount },
+    { path: "/user/me", component: UserAccount },
   ],
 });
 

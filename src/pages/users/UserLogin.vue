@@ -52,7 +52,7 @@ export default {
       try {
         const payload = { username: this.username, password: this.password };
         await this.$store.dispatch("login", payload);
-        this.$router.replace("/tours");
+        this.$router.replace("/user/me");
       } catch (err) {
         console.log(err);
         this.error = err;

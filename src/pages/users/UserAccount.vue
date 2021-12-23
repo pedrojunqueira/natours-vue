@@ -32,7 +32,7 @@
             >
           </li>
         </ul>
-        <div class="admin-nav">
+        <div v-if="isAdmin" class="admin-nav">
           <h5 class="admin-nav__heading">Admin</h5>
           <ul class="side-nav">
             <li>
@@ -69,7 +69,9 @@
         <div class="user-view__form-container">
           <h2 class="heading-secondary ma-bt-md">Your account settings</h2>
           <form class="form form-user-data">
-            <div class="form__group"><h1>username : jonasschmedtmann</h1></div>
+            <div class="form__group">
+              <h1>username : {{ username }}</h1>
+            </div>
 
             <div class="form__group">
               <label class="form__label" for="name">Name</label
@@ -77,8 +79,18 @@
                 class="form__input"
                 id="name"
                 type="text"
-                value="Jonas Schmedtmann"
                 required="required"
+                v-model="name"
+              />
+            </div>
+            <div class="form__group">
+              <label class="form__label" for="name">Last Name</label
+              ><input
+                class="form__input"
+                id="lastname"
+                type="text"
+                required="required"
+                v-model="lastname"
               />
             </div>
             <div class="form__group ma-bt-md">
@@ -87,16 +99,16 @@
                 class="form__input"
                 id="email"
                 type="email"
-                value="admin@natours.io"
                 required="required"
+                v-model="email"
               />
             </div>
             <div class="form__group form__photo-upload">
-              <img
-                class="form__user-photo"
-                src="img/user.jpg"
-                alt="User photo"
-              /><a class="btn-text" href="">Choose new photo</a>
+              <img class="form__user-photo" :src="image" alt="User photo" /><a
+                class="btn-text"
+                href=""
+                >Choose new photo</a
+              >
             </div>
             <div class="form__group right">
               <button class="btn btn--small btn--green">Save settings</button>
@@ -158,23 +170,68 @@ import axios from "axios";
 export default {
   data() {
     return {
-      selectedTour: null,
-      tourId: null,
+      name: "",
+      lastname: "",
+      username: "",
+      email: "",
+      photo: "",
+      user: null,
+      userId: null,
+      current_password: "",
+      password: "",
+      confirm_password: "",
+      role: null,
     };
   },
-  created() {
-    this.userId = this.$route.params.id;
-    console.log(this.userId);
-    this.loadUser(this.tourId);
+  async created() {
+    if (this.$route.params.id) {
+      this.userId = this.$route.params.id;
+      await this.loadUser(this.userId);
+      return;
+      // function to load a user check if admin...
+    }
+    await this.$store.dispatch("fetchMe");
+    const user = this.$store.getters.me;
+    this.populateUser(user);
+  },
+  computed: {
+    isAdmin() {
+      return this.role == "admin";
+    },
+    image() {
+      const photo = this.photo;
+      return photo
+        ? require(`@/assets/img/users/${photo}`)
+        : require(`@/assets/img/users/default.jpg`);
+    },
   },
   methods: {
+    populateUser(user) {
+      this.user = user;
+      this.name = user.name;
+      this.lastname = user.lastname;
+      this.email = user.email;
+      this.username = user.username;
+      this.role = user.role;
+      this.photo = user.photo;
+    },
     async loadUser(Id) {
-      const url = `http://127.0.0.1:8000/api/v1/tours/${Id}`;
-      const response = await axios(url);
-      if (response.status == 200) {
-        const tour = response.data.data;
-        this.selectedTour = tour;
+      const token = this.$store.getters.token;
+
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const response = await axios({
+        method: "get",
+        url: `http://127.0.0.1:8000/api/v1/users/${Id}`,
+        headers,
+      });
+      if (!response.status == 200) {
+        const error = new Error("Failed load user Check your credentials.");
+        throw error;
       }
+
+      const user = response.data.user;
+      this.populateUser(user);
     },
   },
 };
