@@ -12,6 +12,10 @@
           v-model="username"
         />
       </div>
+      <router-link class="right" to="/forgot_password"
+        >Forgot Password?</router-link
+      >
+      <!-- <a class="right" href="/tours/sign_up">Forgot Password?</a> -->
       <div class="form__group ma-bt-md">
         <label for="password" class="form__label">Password</label>
         <input
@@ -77,3 +81,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.right {
+  float: right;
+}
+</style>

@@ -86,11 +86,13 @@ export default {
         if (response.status == 200) {
           this.successMessage = response.data.message;
           this.flashMessage = true;
+          this.isError = false;
           this.isSuccess = true;
         }
       } catch (err) {
         this.successMessage = err.response.data.detail;
         this.flashMessage = true;
+        this.isSuccess = false;
         this.isError = true;
       }
     },
