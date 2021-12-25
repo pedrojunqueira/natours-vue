@@ -68,12 +68,10 @@
       <div class="user-view__content">
         <div class="user-view__form-container">
           <h2 class="heading-secondary ma-bt-md">Your account settings</h2>
-
           <form @click.prevent="updateMe" class="form form-user-data">
             <div class="form__group">
               <h1>username : {{ username }}</h1>
             </div>
-
             <div class="form__group">
               <label class="form__label" for="name">Name</label
               ><input
@@ -114,6 +112,9 @@
 
             <div class="form__group right">
               <button class="btn btn--small btn--green">Save settings</button>
+            </div>
+            <div v-if="savedDetail" class="alert alert-success">
+              error was not able to update successfully changed
             </div>
           </form>
         </div>
@@ -167,6 +168,13 @@
                 Save password
               </button>
             </div>
+            <div
+              v-if="flashMessage"
+              class="alert"
+              :class="{ 'alert-success': isSuccess, 'alert-danger': isError }"
+            >
+              {{ successMessage }}
+            </div>
           </form>
         </div>
       </div>
@@ -191,6 +199,10 @@ export default {
       password: "",
       confirm_password: "",
       role: null,
+      successMessage: "",
+      flashMessage: false,
+      isSuccess: false,
+      isError: false,
     };
   },
   async created() {
@@ -213,6 +225,12 @@ export default {
       return photo
         ? require(`@/assets/img/users/${photo}`)
         : require(`@/assets/img/users/default.jpg`);
+    },
+    savedDetail() {
+      return false;
+    },
+    updatedPassword() {
+      return false;
     },
   },
   methods: {
@@ -244,23 +262,32 @@ export default {
       this.populateUser(user);
     },
     async updateMe() {
-      const newMe = {
-        name: this.name,
-        lastname: this.lastname,
-        email: this.email,
-      };
-      const token = this.$store.getters.token;
-      const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios({
-        method: "patch",
-        url: "http://127.0.0.1:8000/api/v1/users/updateme",
-        data: newMe,
-        headers: headers,
-      });
-      if (!response.status == 200) {
-        const error = new Error("Failed to update me. Check your credentials.");
-        throw error;
+      try {
+        const newMe = {
+          name: this.name,
+          lastname: this.lastname,
+          email: this.email,
+        };
+        const token = this.$store.getters.token;
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios({
+          method: "patch",
+          url: "http://127.0.0.1:8000/api/v1/users/updateme",
+          data: newMe,
+          headers: headers,
+        });
+        if (response.status == 200) {
+          this.successMessage = response.data.message;
+          this.flashMessage = true;
+          this.isSuccess = true;
+        }
+      } catch (err) {
+        console.log(err);
       }
+      // if (!response.status == 200) {
+      //   const error = new Error("Failed to update me. Check your credentials.");
+      //   throw error;
+      // }
     },
     async updateMyPassword() {
       const newPassword = {

@@ -5,6 +5,8 @@ import TourDetail from "./pages/tours/TourDetail.vue";
 import UserLogin from "./pages/users/UserLogin.vue";
 import UserSignUp from "./pages/users/UserSignUp.vue";
 import UserAccount from "./pages/users/UserAccount.vue";
+import UserForgotPassword from "./pages/users/UserForgotPassword.vue";
+import UserResetPassword from "./pages/users/UserResetPassword.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,6 +18,8 @@ const router = createRouter({
     { path: "/tours/sign_up", component: UserSignUp },
     { path: "/user/:id", component: UserAccount },
     { path: "/user/me", component: UserAccount },
+    { path: "/forgot_password", component: UserForgotPassword },
+    { path: "/reset_password/:reset_token", component: UserResetPassword },
   ],
 });
 
