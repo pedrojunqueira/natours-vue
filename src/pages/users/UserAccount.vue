@@ -68,7 +68,7 @@
       <div class="user-view__content">
         <div class="user-view__form-container">
           <h2 class="heading-secondary ma-bt-md">Your account settings</h2>
-          <form @click.prevent="updateMe" class="form form-user-data">
+          <form class="form form-user-data">
             <div class="form__group">
               <h1>username : {{ username }}</h1>
             </div>
@@ -111,7 +111,12 @@
             </div>
 
             <div class="form__group right">
-              <button class="btn btn--small btn--green">Save settings</button>
+              <button
+                @click.prevent="updateMe"
+                class="btn btn--small btn--green"
+              >
+                Save settings
+              </button>
             </div>
             <div
               v-if="flashMessageDetail"

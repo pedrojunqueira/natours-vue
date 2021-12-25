@@ -8,7 +8,7 @@
     </div>
     <nav class="nav nav--user">
       <a v-if="isLoggdedIn" href="#" class="nav__el">My bookings</a>
-      <a v-if="isLoggdedIn" href="#" class="nav__el">
+      <a v-if="isLoggdedIn" href="/user/me" class="nav__el">
         <img :src="meImage" alt="User photo" class="nav__user-img" />
         <span>{{ name }}</span>
       </a>
