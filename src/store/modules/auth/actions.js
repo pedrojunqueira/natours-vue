@@ -2,37 +2,40 @@ import axios from "axios";
 
 export default {
   async auth(context, payload) {
-    const config = {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    };
-    const params = new URLSearchParams();
-    params.append("username", payload.username);
-    params.append("password", payload.password);
-    const response = await axios({
-      method: "post",
-      url: "http://127.0.0.1:8000/api/v1/users/token",
-      data: params,
-      config,
-    });
-    if (!response.status == 200) {
-      const error = new Error("Failed to authenticate. Check your login data.");
-      throw error;
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      };
+      const params = new URLSearchParams();
+      params.append("username", payload.username);
+      params.append("password", payload.password);
+      const response = await axios({
+        method: "post",
+        url: "http://127.0.0.1:8000/api/v1/users/token",
+        data: params,
+        config,
+      });
+      if (response.status == 200) {
+        localStorage.setItem("token", response.data.access_token);
+        localStorage.setItem("username", payload.username);
+
+        const user = {
+          username: payload.username,
+          token: response.data.access_token,
+        };
+        context.commit("setUser", user);
+        await context.dispatch("fetchMe");
+        return response;
+      }
+    } catch (err) {
+      //console.log(err.response.data.detail);
     }
-
-    localStorage.setItem("token", response.data.access_token);
-    localStorage.setItem("username", payload.username);
-
-    const user = {
-      username: payload.username,
-      token: response.data.access_token,
-    };
-    context.commit("setUser", user);
-    await context.dispatch("fetchMe");
   },
   async login(context, payload) {
-    return await context.dispatch("auth", payload);
+    const response = await context.dispatch("auth", payload);
+    return response;
   },
   logout(context) {
     localStorage.removeItem("token");

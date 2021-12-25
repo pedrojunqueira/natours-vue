@@ -113,8 +113,12 @@
             <div class="form__group right">
               <button class="btn btn--small btn--green">Save settings</button>
             </div>
-            <div v-if="savedDetail" class="alert alert-success">
-              error was not able to update successfully changed
+            <div
+              v-if="flashMessageDetail"
+              class="alert"
+              :class="{ 'alert-success': isSuccess, 'alert-danger': isError }"
+            >
+              {{ message }}
             </div>
           </form>
         </div>
@@ -169,11 +173,11 @@
               </button>
             </div>
             <div
-              v-if="flashMessage"
+              v-if="flashMessagePassword"
               class="alert"
               :class="{ 'alert-success': isSuccess, 'alert-danger': isError }"
             >
-              {{ successMessage }}
+              {{ message }}
             </div>
           </form>
         </div>
@@ -199,8 +203,9 @@ export default {
       password: "",
       confirm_password: "",
       role: null,
-      successMessage: "",
-      flashMessage: false,
+      message: "",
+      flashMessageDetail: false,
+      flashMessagePassword: false,
       isSuccess: false,
       isError: false,
     };
@@ -277,38 +282,40 @@ export default {
           headers: headers,
         });
         if (response.status == 200) {
-          this.successMessage = response.data.message;
-          this.flashMessage = true;
+          this.message = "Details Updated Successfully";
+          this.flashMessageDetail = true;
           this.isSuccess = true;
         }
       } catch (err) {
         console.log(err);
       }
-      // if (!response.status == 200) {
-      //   const error = new Error("Failed to update me. Check your credentials.");
-      //   throw error;
-      // }
     },
     async updateMyPassword() {
-      const newPassword = {
-        current_password: this.current_password,
-        password: this.password,
-        confirm_password: this.confirm_password,
-      };
-      const token = this.$store.getters.token;
-      const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios({
-        method: "patch",
-        url: "http://127.0.0.1:8000/api/v1/users/updatemypassword",
-        data: newPassword,
-        headers: headers,
-      });
-      console.log(response.data);
-      if (!response.status == 200) {
-        const error = new Error(
-          "Failed to update my password. Check your credentials."
-        );
-        throw error;
+      try {
+        const newPassword = {
+          current_password: this.current_password,
+          password: this.password,
+          confirm_password: this.confirm_password,
+        };
+        const token = this.$store.getters.token;
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios({
+          method: "patch",
+          url: "http://127.0.0.1:8000/api/v1/users/updatemypassword",
+          data: newPassword,
+          headers: headers,
+        });
+        if (response.status == 200) {
+          this.message = "Password Successfully Updated";
+          this.flashMessagePassword = true;
+          this.isError = false;
+          this.isSuccess = true;
+        }
+      } catch (err) {
+        this.message = err.response.data.detail;
+        this.flashMessagePassword = true;
+        this.isSuccess = false;
+        this.isError = true;
       }
     },
   },

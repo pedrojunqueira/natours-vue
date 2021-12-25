@@ -25,9 +25,19 @@
       <div class="form__group">
         <button class="btn btn--green">Login</button>
       </div>
+    </form>
+    <div class="form__group">
       <p class="form__label">Do not have an account?</p>
       <a href="/tours/sign_up" class="btn btn--green"> sign_up</a>
-    </form>
+    </div>
+
+    <div
+      v-if="flashMessage"
+      class="alert"
+      :class="{ 'alert-success': isSuccess, 'alert-danger': isError }"
+    >
+      {{ message }}
+    </div>
     <p v-if="!isValid">Please enter an username and password to Login</p>
   </div>
 </template>
@@ -40,6 +50,10 @@ export default {
       password: "",
       isValid: true,
       error: null,
+      message: "",
+      flashMessage: false,
+      isSuccess: false,
+      isError: false,
     };
   },
   methods: {
@@ -49,13 +63,15 @@ export default {
         this.isValid = false;
         return;
       }
-      try {
-        const payload = { username: this.username, password: this.password };
-        await this.$store.dispatch("login", payload);
+      const payload = { username: this.username, password: this.password };
+      const response = await this.$store.dispatch("login", payload);
+      if (response) {
         this.$router.replace("/user/me");
-      } catch (err) {
-        console.log(err);
-        this.error = err;
+      } else {
+        this.message = "username or password is incorrect";
+        this.flashMessage = true;
+        this.isSuccess = false;
+        this.isError = true;
       }
     },
   },

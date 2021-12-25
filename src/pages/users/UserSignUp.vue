@@ -49,10 +49,12 @@
       <div class="form__group">
         <button class="btn btn--green">Sign up</button>
       </div>
-      <p class="form__label">Already have an account?</p>
-      <a href="/tours/login" class="btn btn--green">Log In</a>
     </form>
     <p v-if="!isValid">please fill in all form fields</p>
+    <div class="form__group">
+      <p class="form__label">Already have an account?</p>
+      <a href="/tours/login" class="btn btn--green">Log In</a>
+    </div>
   </div>
 </template>
 
@@ -88,7 +90,7 @@ export default {
           confirm_password: this.confirm_password,
         };
         await this.$store.dispatch("signUp", payload);
-        this.$router.replace("/tours");
+        this.$router.replace("/user/me");
       } catch (err) {
         console.log(err);
       }
