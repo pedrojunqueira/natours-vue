@@ -7,6 +7,8 @@ export default {
     return {
       username: null,
       token: null,
+      expires: null,
+      didAutoLogout: false,
       me: {},
     };
   },

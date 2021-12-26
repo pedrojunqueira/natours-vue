@@ -1,4 +1,7 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
+
+let timer;
 
 export default {
   async auth(context, payload) {
@@ -18,12 +21,20 @@ export default {
         config,
       });
       if (response.status == 200) {
-        localStorage.setItem("token", response.data.access_token);
+        const token = response.data.access_token;
+        const expiresIn = jwt_decode(token).exp;
+        localStorage.setItem("token", token);
         localStorage.setItem("username", payload.username);
+        localStorage.setItem("expires", expiresIn);
+
+        timer = setTimeout(function () {
+          context.dispatch("autoLogout");
+        }, +expiresIn - 30);
 
         const user = {
           username: payload.username,
           token: response.data.access_token,
+          expires: jwt_decode(token).exp,
         };
         context.commit("setUser", user);
         await context.dispatch("fetchMe");
@@ -40,26 +51,39 @@ export default {
   logout(context) {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("expires");
+
+    clearTimeout(timer);
 
     context.commit("resetUser");
   },
   async fetchMe(context) {
-    const headers = { Authorization: `Bearer ${context.getters.token}` };
-    const response = await axios({
-      method: "get",
-      url: "http://127.0.0.1:8000/api/v1/users/me",
-      headers,
-    });
-    if (!response.status == 200) {
-      const error = new Error("Failed to fetch me");
-      throw error;
+    try {
+      const headers = { Authorization: `Bearer ${context.getters.token}` };
+      const response = await axios({
+        method: "get",
+        url: "http://127.0.0.1:8000/api/v1/users/me",
+        headers,
+      });
+      const me = response.data;
+      context.commit("setMe", me);
+    } catch (err) {
+      console.log(err.response);
     }
-    const me = response.data;
-    context.commit("setMe", me);
   },
   async tryLogin(context) {
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
+    const expires = localStorage.getItem("expires");
+    const expiresIn = +expires - new Date().getTime() / 1000;
+
+    if (expiresIn < 0) {
+      return;
+    }
+
+    timer = setTimeout(function () {
+      context.dispatch("autoLogout");
+    }, +expiresIn - 30);
 
     if (token && username) {
       const user = { username, token };
@@ -68,18 +92,24 @@ export default {
     }
   },
   async signUp(context, payload) {
-    const response = await axios({
-      method: "post",
-      url: "http://127.0.0.1:8000/api/v1/users/signup",
-      data: payload,
-    });
-    if (!response.status == 200) {
-      const error = new Error("Failed to Sign up. Check your login data.");
-      throw error;
+    try {
+      const response = await axios({
+        method: "post",
+        url: "http://127.0.0.1:8000/api/v1/users/signup",
+        data: payload,
+      });
+      if (response.status == 200) {
+        await context.dispatch("login", {
+          username: payload.username,
+          password: payload.password,
+        });
+      }
+    } catch (err) {
+      console.log(err.response);
     }
-    await context.dispatch("login", {
-      username: payload.username,
-      password: payload.password,
-    });
+  },
+  autoLogout(context) {
+    context.dispatch("logout");
+    context.commit("setAutoLogout");
   },
 };
