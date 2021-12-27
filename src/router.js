@@ -14,7 +14,7 @@ const router = createRouter({
   routes: [
     { path: "/", redirect: "/tours" },
     { path: "/tours", component: ToursList },
-    { path: "/tours/:id", component: TourDetail },
+    { path: "/tours/:id", component: TourDetail, meta: { requiresAuth: true } },
     {
       path: "/tours/login",
       component: UserLogin,

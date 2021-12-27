@@ -55,7 +55,10 @@
         <span class="card__footer-value">{{ rating }} </span>
         <span class="card__footer-text"> rating (21)</span>
       </p>
-      <a :href="`/tours/${this.tourId}`" class="btn btn--green btn--small"
+      <a
+        v-if="isAuthenticated"
+        :href="`/tours/${this.tourId}`"
+        class="btn btn--green btn--small"
         >Details</a
       >
     </div>
@@ -84,6 +87,9 @@ export default {
     imageNumber() {
       const tourNumber = this.image.split("-");
       return tourNumber[1];
+    },
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
     },
   },
 };

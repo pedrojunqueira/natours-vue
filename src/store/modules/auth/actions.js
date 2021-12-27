@@ -22,14 +22,15 @@ export default {
       });
       if (response.status == 200) {
         const token = response.data.access_token;
-        const expiresIn = jwt_decode(token).exp;
+        const expires = jwt_decode(token).exp;
         localStorage.setItem("token", token);
         localStorage.setItem("username", payload.username);
-        localStorage.setItem("expires", expiresIn);
+        localStorage.setItem("expires", expires);
+        const expiresIn = (+expires - new Date().getTime() / 1000) * 1000;
 
         timer = setTimeout(function () {
           context.dispatch("autoLogout");
-        }, +expiresIn - 30);
+        }, expiresIn);
 
         const user = {
           username: payload.username,
@@ -75,7 +76,7 @@ export default {
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
     const expires = localStorage.getItem("expires");
-    const expiresIn = +expires - new Date().getTime() / 1000;
+    const expiresIn = (+expires - new Date().getTime() / 1000) * 1000;
 
     if (expiresIn < 0) {
       return;
@@ -83,7 +84,7 @@ export default {
 
     timer = setTimeout(function () {
       context.dispatch("autoLogout");
-    }, +expiresIn - 30);
+    }, expiresIn);
 
     if (token && username) {
       const user = { username, token };
