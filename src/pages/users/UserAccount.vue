@@ -103,11 +103,16 @@
               />
             </div>
             <div class="form__group form__photo-upload">
-              <img class="form__user-photo" :src="image" alt="User photo" /><a
-                class="btn-text"
-                href=""
-                >Choose new photo</a
+              <img class="form__user-photo" :src="image" alt="User photo" />
+            </div>
+            <input type="file" @change="onFileSelected" />
+            <div class="form__group right">
+              <button
+                @click.prevent="uploadPhoto"
+                class="btn btn--small btn--green"
               >
+                Upload Photo
+              </button>
             </div>
 
             <div class="form__group right">
@@ -213,6 +218,7 @@ export default {
       flashMessagePassword: false,
       isSuccess: false,
       isError: false,
+      selectedFile: null,
     };
   },
   async created() {
@@ -220,7 +226,6 @@ export default {
       this.userId = this.$route.params.id;
       await this.loadUser(this.userId);
       return;
-      // function to load a user check if admin...
     }
     await this.$store.dispatch("fetchMe");
     const user = this.$store.getters.me;
@@ -232,9 +237,13 @@ export default {
     },
     image() {
       const photo = this.photo;
-      return photo
-        ? require(`@/assets/img/users/${photo}`)
-        : require(`@/assets/img/users/default.jpg`);
+      try {
+        const folder_photo = require(`@/assets/img/users/${photo}`);
+        return folder_photo;
+      } catch (err) {
+        console.log(err.message);
+      }
+      return require(`@/assets/img/users/default.jpg`);
     },
     savedDetail() {
       return false;
@@ -319,6 +328,36 @@ export default {
       } catch (err) {
         this.message = err.response.data.detail;
         this.flashMessagePassword = true;
+        this.isSuccess = false;
+        this.isError = true;
+      }
+    },
+    onFileSelected(event) {
+      this.selectedFile = event.target.files[0];
+    },
+    async uploadPhoto() {
+      try {
+        const photoData = new FormData();
+        photoData.append("files", this.selectedFile);
+        const token = this.$store.getters.token;
+        const config = {
+          method: "post",
+          url: "http://127.0.0.1:8000/api/v1/users/upload_user_image/",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: photoData,
+        };
+        const response = await axios(config);
+        if (response.status == 200) {
+          this.message = response.data.message;
+          this.flashMessageDetail = true;
+          this.isError = false;
+          this.isSuccess = true;
+        }
+      } catch (err) {
+        this.message = err.response.data.detail;
+        this.flashMessageDetail = true;
         this.isSuccess = false;
         this.isError = true;
       }

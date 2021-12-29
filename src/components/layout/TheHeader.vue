@@ -31,9 +31,13 @@ export default {
     },
     meImage() {
       const photo = this.$store.getters.me.photo;
-      return photo
-        ? require(`@/assets/img/users/${photo}`)
-        : require(`@/assets/img/users/default.jpg`);
+      try {
+        const folder_photo = require(`@/assets/img/users/${photo}`);
+        return folder_photo;
+      } catch (err) {
+        console.log(err.message);
+      }
+      return require(`@/assets/img/users/default.jpg`);
     },
   },
   methods: {
