@@ -134,11 +134,12 @@
         />
 
         <div class="cta__content">
-          <h2 class="heading-secondary">What are you waiting for?</h2>
-          <p class="cta__text">
-            10 days. 1 adventure. Infinite memories. Make it yours today!
-          </p>
-          <button class="btn btn--green span-all-rows">Book tour now!</button>
+          <h2 class="heading-secondary">Liked this tour?</h2>
+          <p class="cta__text">Your feedback is very important for us!</p>
+
+          <router-link class="btn btn--green span-all-rows" :to="reviewTourLink"
+            >Review this tour now!</router-link
+          >
         </div>
       </div>
     </section>
@@ -167,6 +168,9 @@ export default {
       const year = nextStart.getFullYear();
       return `${month}  ${year}`;
     },
+    reviewTourLink() {
+      return `/tour_review/${this.$route.params.id}`;
+    },
   },
   created() {
     this.fetchReviews();
@@ -179,7 +183,7 @@ export default {
         };
         const response = await axios({
           method: "get",
-          url: `http://127.0.0.1:8000/api/v1/tours/${this.$route.params.id}/reviews`,
+          url: `${process.env.VUE_APP_BACKEND_SERVER}/api/v1/tours/${this.$route.params.id}/reviews`,
           headers,
         });
         if (response.status == 200) {

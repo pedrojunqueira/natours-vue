@@ -17,6 +17,7 @@ export default {
   },
   created() {
     this.$store.dispatch("tryLogin");
+    console.log(process.env.VUE_APP_BACKEND_SERVER);
   },
   watch: {
     didAutoLogout(curValue, oldValue) {
