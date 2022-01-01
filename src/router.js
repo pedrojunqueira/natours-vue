@@ -8,10 +8,12 @@ import UserSignUp from "./pages/users/UserSignUp.vue";
 import UserAccount from "./pages/users/UserAccount.vue";
 import UserForgotPassword from "./pages/users/UserForgotPassword.vue";
 import UserResetPassword from "./pages/users/UserResetPassword.vue";
+import NotFound from "./pages/NotFound.vue";
 import store from "./store/index.js";
 
 const router = createRouter({
   history: createWebHistory(),
+  mode: "history",
   routes: [
     { path: "/", redirect: "/tours" },
     { path: "/tours", component: ToursList },
@@ -35,6 +37,7 @@ const router = createRouter({
     { path: "/user/me", component: UserAccount, meta: { requiresAuth: true } },
     { path: "/forgot_password", component: UserForgotPassword },
     { path: "/reset_password/:reset_token", component: UserResetPassword },
+    { path: "/:catchAll(.*)", component: NotFound, name: "NotFound" },
   ],
 });
 
